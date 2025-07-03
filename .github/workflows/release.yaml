@@ -145,7 +145,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Get release version
         run: |
-          echo "version=$(grep -m 1 version Cargo.toml | cut -d' ' -f3 | tr -d '\"')" >> $GITHUB_OUTPUT
+            echo "version=$(tomlq -r '.package.version' Cargo.toml)" >> $GITHUB_OUTPUT
         id: version
 
       - name: Build and push (test)
@@ -196,7 +196,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Get release version
         run: |
-          echo "version=$(grep -m 1 version Cargo.toml | cut -d' ' -f3 | tr -d '\"')" >> $GITHUB_OUTPUT
+          echo "version=$(tomlq -r '.package.version' Cargo.toml)" >> $GITHUB_OUTPUT
         id: version
 
       - name: Build and push (test)
@@ -313,7 +313,7 @@ jobs:
       - name: Get release version and hashes
         shell: bash # for -o pipefail, see https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#exit-codes-and-error-action-preference
         run: |
-          echo "version=$(grep -m 1 version Cargo.toml | cut -d' ' -f3 | tr -d '\"' | cut -d'-' -f1)" >> $GITHUB_ENV
+          echo "version=$(tomlq -r '.package.version' Cargo.toml | cut -d'-' -f1)" >> $GITHUB_ENV
           echo "sha256_mac=$(cat /tmp/artifacts/universal-apple-darwin/mirrord_mac_universal.shasum256 | awk '{ print $1 }')" >> $GITHUB_ENV
           echo "sha256_linux_aarch64=$(cat /tmp/artifacts/aarch64-unknown-linux-gnu/mirrord_linux_aarch64.shasum256 | awk '{ print $1 }')" >> $GITHUB_ENV
           echo "sha256_linux_x86_64=$(cat /tmp/artifacts/x86_64-unknown-linux-gnu/mirrord_linux_x86_64.shasum256 | awk '{ print $1 }')" >> $GITHUB_ENV
